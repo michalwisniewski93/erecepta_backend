@@ -8,6 +8,7 @@ const Doctors = require("./models/Doctors")
 const Activeprofile = require('./models/Activeprofile')
 const Patients = require('./models/Patients')
 const Recipes = require('./models/Recipes')
+const Permission = require('./models/Permission')
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -217,6 +218,40 @@ app.post('/recipes', async (req, res) => {
     res.status(400).send("Error adding recipe");
   }
 })
+
+app.delete("/recipes/:id", async (req, res) => {
+  try {
+    const recipes = await Recipes.findByIdAndDelete(req.params.id);
+    res.json({ message: "Recipe deleted", recipes });
+  } catch (err) {
+    res.status(400).send("Error deleting recipe");
+  }
+});
+
+
+app.get("/permission", async(req, res) => {
+  try{
+    const permission = await Permission.find();
+    res.json(permission);
+  }catch(err){
+    res.status(400).send("Error fetching permission");
+  }
+});
+
+
+app.put("/permission/:id", async (req, res) => {
+  try {
+    const updatedPermission = await Permission.findByIdAndUpdate(
+      req.params.id,  // Znajdź element po ID
+      { permission: req.body.permission },  // Zaktualizuj dane
+      { new: true }  // Zwróć zaktualizowany obiekt
+    );
+    res.json(updatedPermission);
+  } catch (err) {
+    res.status(400).send("Error updating permission");
+  }
+});
+
 
 
 
